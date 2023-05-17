@@ -729,20 +729,23 @@ class DeepSpeech(pl.LightningModule):
 
         self.labels = labels
         num_classes = len(self.labels)
-        if self.batchnorm:
-            if self.residual:
-                self.halfsec = HalfSecNetResidual()
-            else:
-                if self.waveform:
-                    self.halfsec = HalfSecNetWav()
-                else:
-                    self.halfsec = HalfSecNet()
+        
+        self.halfsec = CamoCNN()
+        # if self.batchnorm:
+        #     if self.residual:
+        #         self.halfsec = HalfSecNetResidual()
+        #     else:
+        #         if self.waveform:
+        #             self.halfsec = HalfSecNetWav()
+        #         else:
+        #             self.halfsec = HalfSecNet()
 
-        else:
-            if self.residual:
-                self.halfsec = HalfSecNetResidualNoBN()
-            else:
-                self.halfsec = HalfSecNetNoBN()
+        # else:
+        #     if self.residual:
+        #         self.halfsec = HalfSecNetResidualNoBN()
+        #     else:
+        #         self.halfsec = HalfSecNetNoBN()
+
 
         self.conv = MaskConv(nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
