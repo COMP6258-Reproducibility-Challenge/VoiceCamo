@@ -20,6 +20,7 @@ torch.autograd.set_detect_anomaly(True)
 
 from src.decoder import GreedyDecoder
 from src.validation import CharErrorRate, WordErrorRate
+from ../VoiceCamo import CamoCNN
 
 class DownConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride,
@@ -145,7 +146,7 @@ class HalfSecNetWav(nn.Module):
         self.up3 = nn.Sequential(nn.ConvTranspose1d(32, 16, 5, 2),nn.LeakyReLU())
         self.up4 = nn.Sequential(nn.ConvTranspose1d(16, 1, 5, 2),nn.Tanh())
         #self.up5 = nn.ConvTranspose1d(8, 1, 5, 2)
-        self.linear = nn.Sequential(nn.Linear(4117,8000),nn.Tanh())
+        self.linear = nn.Sequential(nn.Linear(4117,8000),nnec.Tanh())
 
 
     def forward(self, x):
@@ -1110,14 +1111,14 @@ class DeepSpeech(pl.LightningModule):
         return Lev.distance(''.join(w1), ''.join(w2))
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(
+        """optimizer = torch.optim.AdamW(
             params=self.halfsec.parameters(),
             lr=self.optim_cfg.learning_rate,
             eps=self.optim_cfg.eps,
-            weight_decay=self.optim_cfg.weight_decay)
-        """optimizer = torch.optim.SGD(
+            weight_decay=self.optim_cfg.weight_decay)"""
+        optimizer = torch.optim.SGD(
             params=self.halfsec.parameters(),
-            lr=self.optim_cfg.learning_rate)"""
+            lr=self.optim_cfg.learning_rate)
 
         scheduler = torch.optim.lr_scheduler.ExponentialLR(
             optimizer=optimizer,
